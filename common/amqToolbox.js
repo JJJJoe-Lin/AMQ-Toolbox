@@ -1,6 +1,6 @@
 /* require("https://raw.githubusercontent.com/TheJoseph98/AMQ-Scripts/master/common/amqScriptInfo.js") */
 /* require("https://raw.githubusercontent.com/TheJoseph98/AMQ-Scripts/master/common/amqWindows.js") */
-let AMQ_Toolbox = (function() {
+if (window.AMQ_Toolbox === undefined) window.AMQ_Toolbox = (function () {
     let settingWindow = null;
     let tabContainer = null;
     let settingsData = new Map();
@@ -194,7 +194,7 @@ let AMQ_Toolbox = (function() {
             #amqtbSettingButton {
                 width: 30px;
                 height: 100%;
-            }       
+            }
             .customCheckboxContainer {
                 display: flex;
             }

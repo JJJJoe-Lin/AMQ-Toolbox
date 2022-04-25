@@ -174,7 +174,7 @@ class AMQ_OptionTable {
         let entries = [];
         let fields = this.fields;
         $(`#${this.tableID} tbody tr`).each(function () {
-            let entry;
+            let entry = {};
             fields.forEach(function (field, idx) {
                 let elem = $(this).find("td").eq(idx);
                 switch (field.type) {
