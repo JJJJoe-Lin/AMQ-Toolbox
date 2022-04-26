@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ No Avatar Snipe
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.0
+// @version      0.1.1
 // @description  Avatar would not change when players answered
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
@@ -41,19 +41,21 @@ let settingsData = new Map([
 
 function createSetting() {
     AMQ_Toolbox.addSettings(settingsData);
-    $("#amqtbOptNoAvatarSnipe").on("click", function () {
-        if (settingsData.get("enableNoAvatarSnipe").checked) {
-            quiz._playerAnswerListener.unbindListener();
-            quiz._playerAnswerListener = listener;
-            quiz._playerAnswerListener.bindListener();
-        } else {
-            quiz._playerAnswerListener.unbindListener();
-            quiz._playerAnswerListener = oldListener;
-            quiz._playerAnswerListener.bindListener();
-        }
+    jQuery(() => {
+        $("#amqtbOptNoAvatarSnipe").on("click", function () {
+            if (AMQ_Toolbox.getSetting("enableNoAvatarSnipe").checked) {
+                quiz._playerAnswerListener.unbindListener();
+                quiz._playerAnswerListener = listener;
+                quiz._playerAnswerListener.bindListener();
+            } else {
+                quiz._playerAnswerListener.unbindListener();
+                quiz._playerAnswerListener = oldListener;
+                quiz._playerAnswerListener.bindListener();
+            }
+        })
     });
 
-    if (settingsData.get("enableNoAvatarSnipe").checked) {
+    if (AMQ_Toolbox.getSetting("enableNoAvatarSnipe").checked) {
         quiz._playerAnswerListener.unbindListener();
         quiz._playerAnswerListener = listener;
         quiz._playerAnswerListener.bindListener();

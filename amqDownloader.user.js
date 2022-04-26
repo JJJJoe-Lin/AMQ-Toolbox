@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ Downloader
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.0
+// @version      0.1.1
 // @description  AMQ song downloader
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
@@ -106,15 +106,17 @@ function AMQ_download(interactive=false, ignore_repeat=true, url=null) {
 
 function createDownloadSetting() {
     AMQ_Toolbox.addSettings(settingsData);
-    $("#amqtbOptAutoDl").on("click", function () {
-        if (settingsData.get("enableAutoDl").checked) {
-            $("#amqtbAutoDl").show();
-        } else {
-            if (isAutoDlRunning) {
-                $("#amqtbAutoDl").trigger("click");
+    jQuery(() => {
+        $("#amqtbOptAutoDl").on("click", function () {
+            if (AMQ_Toolbox.getSetting("enableAutoDl").checked) {
+                $("#amqtbAutoDl").show();
+            } else {
+                if (isAutoDlRunning) {
+                    $("#amqtbAutoDl").trigger("click");
+                }
+                $("#amqtbAutoDl").hide();
             }
-            $("#amqtbAutoDl").hide();
-        }
+        });
     });
 }
 
