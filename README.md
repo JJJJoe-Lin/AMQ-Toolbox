@@ -9,3 +9,6 @@ Download audio/video file of the question. You can use auto download to download
 
 ## [AMQ Quick Answer (amqQuickAnswer.user.js)](https://raw.githubusercontent.com/JJJJoe-Lin/AMQ-Toolbox/master/amqQuickAnswer.user.js)
 Customized buttons for answering quickly.
+
+## [AMQ Force Skip (amqForceSkip.user.js)](https://raw.githubusercontent.com/JJJJoe-Lin/AMQ-Toolbox/master/amqForceSkip.user.js)
+Force skip the answer phase without waiting buffering. Notice: you may not hear the next song where loading is not completed .
