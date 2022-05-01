@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ Quick Answer
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.0
+// @version      0.1.1
 // @description  AMQ Quick-Answer Buttons.
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
@@ -54,7 +54,7 @@ function refreshAnswerButton() {
 }
 
 function createQuickAnsSetting() {
-    AMQ_Toolbox.addTab("Quick Ans", "amqtbQuickAnsSettingTab", "amqtbQuickAnsSettingContainer");
+    amqToolbox.addTab("Quick Ans", "amqtbQuickAnsSettingTab", "amqtbQuickAnsSettingContainer");
     let table = new AMQ_OptionTable(
         "Quick Answer List", 
         "amqtbAnsTable", 
@@ -69,11 +69,16 @@ function createQuickAnsSetting() {
 
 function createQuickAnsBlock() {
     let content = $(`<div class="amqtbButtonContainer"></div>`);
-    AMQ_Toolbox.addBlock("Quick Answer", "amqtbQuickAnsBlock", content);
+    amqToolbox.addBlock("Quick Answer", "amqtbQuickAnsBlock", content);
     refreshAnswerButton();
 }
 
 function setup() {
+    if (window.amqToolbox === undefined) {
+        window.amqToolbox = new AMQ_Toolbox();
+        AMQ_addStyle(amqToolbox.css);
+    }
+
     createQuickAnsSetting();
     createQuickAnsBlock();
 
