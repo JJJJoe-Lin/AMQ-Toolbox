@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         AMQ Downloader
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.1
+// @version      0.1.3
 // @description  AMQ song downloader
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
-// @grant        none
+// @grant        unsafeWindow
+// @grant        GM_addStyle
 // @require      https://raw.githubusercontent.com/TheJoseph98/AMQ-Scripts/master/common/amqScriptInfo.js
 // @require      https://raw.githubusercontent.com/TheJoseph98/AMQ-Scripts/master/common/amqWindows.js
 // @require      https://raw.githubusercontent.com/JJJJoe-Lin/AMQ-Toolbox/master/common/amqToolbox.js
@@ -105,10 +106,10 @@ function AMQ_download(interactive=false, ignore_repeat=true, url=null) {
 }
 
 function createDownloadSetting() {
-    AMQ_Toolbox.addSettings(settingsData);
+    amqToolbox.addSettings(settingsData);
     jQuery(() => {
         $("#amqtbOptAutoDl").on("click", function () {
-            if (AMQ_Toolbox.getSetting("enableAutoDl").checked) {
+            if (amqToolbox.getSetting("enableAutoDl").checked) {
                 $("#amqtbAutoDl").show();
             } else {
                 if (isAutoDlRunning) {
@@ -163,14 +164,19 @@ function createDownloadBlock() {
     let content = $(`<div class="amqtbButtonContainer"></div>`);
     
     content.append(autoDLBtn, videoDLBtn, audioDLBtn);
-    AMQ_Toolbox.addBlock("Download", "amqtbDlBlock", content);
+    amqToolbox.addBlock("Download", "amqtbDlBlock", content);
 
-    if (!AMQ_Toolbox.getSetting("enableAutoDl").checked) {
+    if (!amqToolbox.getSetting("enableAutoDl").checked) {
         autoDLBtn.hide();
     }
 }
 
 function setup() {
+    if (unsafeWindow.amqToolbox === undefined) {
+        unsafeWindow.amqToolbox = new AMQ_Toolbox();
+        GM_addStyle(amqToolbox.css);
+    }
+
     createDownloadSetting();
     createDownloadBlock();
 
@@ -208,8 +214,8 @@ function setup() {
                     isCorrect = result.players[playerIdx].correct;
                 }
                 
-                if (!AMQ_Toolbox.getSetting("autoDlOnWrong").checked || !isCorrect) {
-                    let dlURL = AMQ_Toolbox.getSetting("autoDlAudio").checked ? audioURL : videoURL;
+                if (!amqToolbox.getSetting("autoDlOnWrong").checked || !isCorrect) {
+                    let dlURL = amqToolbox.getSetting("autoDlAudio").checked ? audioURL : videoURL;
                     dlURL = dlURL !== undefined ? dlURL : null;
                     setTimeout(() => {
                         AMQ_download(false, true, dlURL);

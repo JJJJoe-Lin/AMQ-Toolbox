@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ Force Skip
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.1
+// @version      0.1.2
 // @description  Skip song without waiting buffering
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
@@ -39,10 +39,10 @@ let settingsData = new Map([
 ]);
 
 function createSkipSetting() {
-    AMQ_Toolbox.addSettings(settingsData);
+    amqToolbox.addSettings(settingsData);
     jQuery(() => {
         $("#amqtbOptForceSkip").on("click", function () {
-            if (AMQ_Toolbox.getSetting("enableForceSkip").checked) {
+            if (amqToolbox.getSetting("enableForceSkip").checked) {
                 $("#amqtbSkipBlock").show();
             } else {
                 if (isAutoSkipRunning) {
@@ -86,14 +86,19 @@ function createSkipBlock() {
     let content = $(`<div class="amqtbButtonContainer"></div>`);
 
     content.append(autoBtn, onceBtn);
-    AMQ_Toolbox.addBlock("Force Skip", "amqtbSkipBlock", content);
+    amqToolbox.addBlock("Force Skip", "amqtbSkipBlock", content);
 
-    if (!AMQ_Toolbox.getSetting("enableForceSkip").checked) {
+    if (!amqToolbox.getSetting("enableForceSkip").checked) {
         $(`#amqtbSkipBlock`).hide();
     }
 }
 
 function setup() {
+    if (window.amqToolbox === undefined) {
+        window.amqToolbox = new AMQ_Toolbox();
+        AMQ_addStyle(amqToolbox.css);
+    }
+
     createSkipSetting();
     createSkipBlock();
 
