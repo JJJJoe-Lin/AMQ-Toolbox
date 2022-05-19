@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ Downloader
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.3
+// @version      0.1.4
 // @description  AMQ song downloader
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
@@ -24,7 +24,7 @@ let loadInterval = setInterval(() => {
     }
 }, 500);
 
-let song_set = new Set()
+let songSet = new Set()
 let isAutoDlRunning = false;
 let settingsData = new Map([
     [
@@ -76,33 +76,33 @@ function download(url, filename) {
     });
 }
 
-function AMQ_download(interactive=false, ignore_repeat=true, url=null) {
-    const anime_name = $("#qpAnimeName").text();
-    const song_name = $("#qpSongName").text();
+function AMQ_download(interactive=false, ignoreRepeat=true, url=null) {
+    const animeName = $("#qpAnimeName").text();
+    const songName = $("#qpSongName").text();
     const type = $("#qpSongType").text();
     const singer = $("#qpSongArtist").text();
-    let file_name = '[' + anime_name + ' (' + type + ')] ' + song_name + ' (' + singer + ')';
+    let fileName = '[' + animeName + ' (' + type + ')] ' + songName + ' (' + singer + ')';
 
     if (url === null) {
         url = document.getElementById('qpSongVideoLink').href;
     }
 
-    file_name = file_name.replace(/\./g, "_");
+    fileName = fileName.replace(/\./g, "_");
 
-    if (anime_name == "") {
+    if (animeName == "") {
         return;
     }
     // Don't save the song if it is saved before.
-    if (ignore_repeat) {
-        let song_info = file_name + ': ' + url
-        if (song_set.has(song_info)) {
+    if (ignoreRepeat) {
+        let songInfo = fileName + ': ' + url
+        if (songSet.has(songInfo)) {
             return;
         }
-        song_set.add(song_info);
+        songSet.add(songInfo);
     }
-    download(url, file_name);
+    download(url, fileName);
     if (interactive == true)
-        alert('downloading song: ' + file_name);
+        alert('downloading song: ' + fileName);
 }
 
 function createDownloadSetting() {
