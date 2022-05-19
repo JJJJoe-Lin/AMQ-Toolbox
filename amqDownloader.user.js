@@ -65,23 +65,23 @@ let settingsData = new Map([
 
 // *** Copied from stackoverflow ***
 function download(url, filename) {
-	fetch(url).then(function(t) {
-		return t.blob().then((b)=>{
-			var a = document.createElement("a");
-			a.href = URL.createObjectURL(b);
-			a.setAttribute("download", filename);
-			a.click();
-		}
-		);
-	});
+    fetch(url).then(function(t) {
+        return t.blob().then((b)=>{
+            var a = document.createElement("a");
+            a.href = URL.createObjectURL(b);
+            a.setAttribute("download", filename);
+            a.click();
+        }
+        );
+    });
 }
 
 function AMQ_download(interactive=false, ignore_repeat=true, url=null) {
     const anime_name = $("#qpAnimeName").text();
-	const song_name = $("#qpSongName").text();
-	const type = $("#qpSongType").text();
-	const singer = $("#qpSongArtist").text();
-	let file_name = '[' + anime_name + ' (' + type + ')] ' + song_name + ' (' + singer + ')';
+    const song_name = $("#qpSongName").text();
+    const type = $("#qpSongType").text();
+    const singer = $("#qpSongArtist").text();
+    let file_name = '[' + anime_name + ' (' + type + ')] ' + song_name + ' (' + singer + ')';
 
     if (url === null) {
         url = document.getElementById('qpSongVideoLink').href;
@@ -100,7 +100,7 @@ function AMQ_download(interactive=false, ignore_repeat=true, url=null) {
         }
         song_set.add(song_info);
     }
-	download(url, file_name);
+    download(url, file_name);
     if (interactive == true)
         alert('downloading song: ' + file_name);
 }
@@ -193,7 +193,7 @@ function setup() {
                     $("#amqtbVideoDl").data("url", videoURL).removeClass("disabled");
                     break;
                 }
-			}
+            }
 
             let audioURL = result.songInfo.urlMap.catbox["0"];
             if (audioURL !== undefined) {
