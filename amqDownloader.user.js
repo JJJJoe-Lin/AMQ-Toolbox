@@ -106,13 +106,13 @@ function nameFromSongInfo(songInfo) {
     return '[' + animeName + ' (' + type + ')] ' + songName + ' (' + artist + ')'
 }
 
-function AMQ_download(url, interactive=true) {
+function downloadSongData(url, interactive=true) {
     if (url === undefined) {
-        console.warn("AMQ_download: url is undefined")
+        console.warn("downloadSongData: url is undefined")
         return
     }
     if (currentSongInfo === undefined) {
-        console.warn("AMQ_download: currentSongInfo is undefined")
+        console.warn("downloadSongData: currentSongInfo is undefined")
         return
     }
 
@@ -124,6 +124,11 @@ function AMQ_download(url, interactive=true) {
         alert('downloading song: ' + fileName);
     }
 }
+function downloadSongInfo() {
+    let fileName = nameFromSongInfo(currentSongInfo);
+    let text = JSON.stringify(currentSongInfo)
+    downloadText(text, fileName + '.txt')
+}
 
 function autoDownload(url) {
     // Don't download the song if it is downloaded before.
@@ -132,7 +137,7 @@ function autoDownload(url) {
     }
     downloadedSongSet.add(url);
 
-    AMQ_download(url, false)
+    downloadSongData(url, false)
 }
 
 function createDownloadSetting() {
@@ -179,7 +184,7 @@ function createDownloadBlock() {
         .text("Video")
         .on("click", function () {
             if ($(this).data("url") !== undefined) {
-                AMQ_download($(this).data("url"));
+                downloadSongData($(this).data("url"));
             }
         });
     let audioDLBtn = $(`<button id="amqtbAudioDl"></button>`)
@@ -188,12 +193,18 @@ function createDownloadBlock() {
         .text("Audio")
         .on("click", function () {
             if ($(this).data("url") !== undefined) {
-                AMQ_download($(this).data("url"));
+                downloadSongData($(this).data("url"));
             }
+        });
+    let infoDLBtn = $(`<button id="amqtbInfoDl"></button>`)
+        .addClass(downloadStyle)
+        .text("Info")
+        .on("click", function () {
+            downloadSongInfo()
         });
     let content = $(`<div class="amqtbButtonContainer"></div>`);
 
-    content.append(autoDLBtn, videoDLBtn, audioDLBtn);
+    content.append(autoDLBtn, videoDLBtn, audioDLBtn, infoDLBtn);
     amqToolbox.addBlock("Download", "amqtbDlBlock", content);
 
     if (!amqToolbox.getSetting("enableAutoDl").checked) {
