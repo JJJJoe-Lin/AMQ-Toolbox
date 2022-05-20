@@ -37,7 +37,7 @@ let settingsData = new Map([
             label: "Enable Auto Download",
             col: 0,
             offset: 0,
-            enables: ["autoDlOnWrong", "autoDlAudio"]
+            enables: ["autoDlOnWrong", "autoDlAudio", "downlaodSongData", "downlaodSongInfo"]
         }
     ],
     [
@@ -61,7 +61,29 @@ let settingsData = new Map([
             col: 0,
             offset: 1
         }
-    ]
+    ],
+    [
+        "downlaodSongData",
+        {
+            id: "amqtbOptDownlaodSongData",
+            checked: true,
+            disabled: false,
+            label: "Download song video/audio data",
+            col: 0,
+            offset: 1
+        }
+    ],
+    [
+        "downlaodSongInfo",
+        {
+            id: "amqtbOptDownlaodSongInfo",
+            checked: true,
+            disabled: false,
+            label: "Download song info",
+            col: 0,
+            offset: 1,
+        }
+    ],
 ]);
 
 // *** Copied from stackoverflow ***
@@ -137,7 +159,12 @@ function autoDownload(url) {
     }
     downloadedSongSet.add(url);
 
-    downloadSongData(url, false)
+    if (amqToolbox.getSetting("downlaodSongData").checked) {
+        downloadSongData(url, false)
+    }
+    if (amqToolbox.getSetting("downlaodSongInfo").checked) {
+        downloadSongInfo()
+    }
 }
 
 function createDownloadSetting() {
