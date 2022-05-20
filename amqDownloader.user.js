@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ Downloader
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.4
+// @version      0.1.5
 // @description  AMQ song downloader
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
@@ -76,16 +76,17 @@ function download(url, filename) {
     });
 }
 
-function AMQ_download(interactive=false, ignoreRepeat=true, url=null) {
+function AMQ_download(interactive=false, ignoreRepeat=true, url) {
+    if (url === undefined) {
+        console.warn("AMQ_download: url is undefined")
+        return
+    }
+
     const animeName = $("#qpAnimeName").text();
     const songName = $("#qpSongName").text();
     const type = $("#qpSongType").text();
     const singer = $("#qpSongArtist").text();
     let fileName = '[' + animeName + ' (' + type + ')] ' + songName + ' (' + singer + ')';
-
-    if (url === null) {
-        url = document.getElementById('qpSongVideoLink').href;
-    }
 
     fileName = fileName.replace(/\./g, "_");
 
@@ -215,8 +216,12 @@ function setup() {
                 }
                 
                 if (!amqToolbox.getSetting("autoDlOnWrong").checked || !isCorrect) {
-                    let dlURL = amqToolbox.getSetting("autoDlAudio").checked ? audioURL : videoURL;
-                    dlURL = dlURL !== undefined ? dlURL : null;
+                    let dlURL
+                    if (amqToolbox.getSetting("autoDlAudio").checked) {
+                        dlURL = (audioURL !== undefined) ? audioURL : videoURL
+                    } else {
+                        dlURL = (videoURL !== undefined) ? videoURL : audioURL
+                    }
                     setTimeout(() => {
                         AMQ_download(false, true, dlURL);
                     }, 0);
