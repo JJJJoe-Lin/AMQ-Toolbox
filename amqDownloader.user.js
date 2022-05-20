@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ Downloader
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.6
+// @version      0.1.7
 // @description  AMQ song downloader
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
@@ -24,8 +24,9 @@ let loadInterval = setInterval(() => {
     }
 }, 500);
 
-let songSet = new Set()
+let downloadedSongSet = new Set()
 let isAutoDlRunning = false;
+let currentSongInfo;
 let settingsData = new Map([
     [
         "enableAutoDl",
@@ -64,7 +65,7 @@ let settingsData = new Map([
 ]);
 
 // *** Copied from stackoverflow ***
-function download(url, filename) {
+function downloadURL(url, filename) {
     fetch(url).then(function(t) {
         return t.blob().then((b)=>{
             var a = document.createElement("a");
@@ -75,34 +76,61 @@ function download(url, filename) {
         );
     });
 }
+function downloadText(text, filename) {
+    var content = [text];
+    var bl = new Blob(content, {type: "text/plain"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(bl);
+    a.download = filename;
+    a.hidden = true;
+    document.body.appendChild(a);
+    a.click();
+}
+
+function songType(songInfo) {
+    switch (songInfo.type) {
+        case 1:
+            return "Opening " + songInfo.typeNumber;
+        case 2:
+            return "Ending " + songInfo.typeNumber;
+        case 3:
+            return "Insert Song";
+    }
+};
+
+function nameFromSongInfo(songInfo) {
+    const animeName = songInfo.animeNames.romaji
+    const songName = songInfo.songName
+    const type = songType(songInfo)
+    const artist = songInfo.artist
+    return '[' + animeName + ' (' + type + ')] ' + songName + ' (' + artist + ')'
+}
 
 function AMQ_download(interactive=false, ignoreRepeat=true, url) {
     if (url === undefined) {
         console.warn("AMQ_download: url is undefined")
         return
     }
+    if (currentSongInfo === undefined) {
+        console.warn("AMQ_download: currentSongInfo is undefined")
+        return
+    }
 
-    const animeName = $("#qpAnimeName").text();
-    const songName = $("#qpSongName").text();
-    const type = $("#qpSongType").text();
-    const singer = $("#qpSongArtist").text();
-    let fileName = '[' + animeName + ' (' + type + ')] ' + songName + ' (' + singer + ')';
+    let fileName = nameFromSongInfo(currentSongInfo);
     let fileExt = url.split('.').pop()
 
-    if (animeName == "") {
-        return;
-    }
     // Don't save the song if it is saved before.
     if (ignoreRepeat) {
-        let songInfo = fileName + ': ' + url
-        if (songSet.has(songInfo)) {
-            return;
+        if (downloadedSongSet.has(url)) {
+            return
         }
-        songSet.add(songInfo);
+        downloadedSongSet.add(url);
     }
-    download(url, fileName + '.' + fileExt);
-    if (interactive == true)
+
+    downloadURL(url, fileName + '.' + fileExt);
+    if (interactive) {
         alert('downloading song: ' + fileName);
+    }
 }
 
 function createDownloadSetting() {
@@ -162,7 +190,7 @@ function createDownloadBlock() {
             }
         });
     let content = $(`<div class="amqtbButtonContainer"></div>`);
-    
+
     content.append(autoDLBtn, videoDLBtn, audioDLBtn);
     amqToolbox.addBlock("Download", "amqtbDlBlock", content);
 
@@ -184,6 +212,8 @@ function setup() {
         "answer results",
         function (result) {
             const resolutions = ["720", "480"];
+
+            currentSongInfo = result.songInfo
 
             let videoURL;
             $("#amqtbVideoDl").removeData("url").addClass("disabled");
@@ -213,7 +243,7 @@ function setup() {
                     });
                     isCorrect = result.players[playerIdx].correct;
                 }
-                
+
                 if (!amqToolbox.getSetting("autoDlOnWrong").checked || !isCorrect) {
                     let dlURL
                     if (amqToolbox.getSetting("autoDlAudio").checked) {
