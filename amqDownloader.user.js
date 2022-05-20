@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ Downloader
 // @namespace    https://github.com/JJJJoe-Lin
-// @version      0.1.7
+// @version      0.1.8
 // @description  AMQ song downloader
 // @author       JJJJoe
 // @match        https://animemusicquiz.com/*
@@ -106,7 +106,7 @@ function nameFromSongInfo(songInfo) {
     return '[' + animeName + ' (' + type + ')] ' + songName + ' (' + artist + ')'
 }
 
-function AMQ_download(interactive=false, ignoreRepeat=true, url) {
+function AMQ_download(url, interactive=true) {
     if (url === undefined) {
         console.warn("AMQ_download: url is undefined")
         return
@@ -119,18 +119,20 @@ function AMQ_download(interactive=false, ignoreRepeat=true, url) {
     let fileName = nameFromSongInfo(currentSongInfo);
     let fileExt = url.split('.').pop()
 
-    // Don't save the song if it is saved before.
-    if (ignoreRepeat) {
-        if (downloadedSongSet.has(url)) {
-            return
-        }
-        downloadedSongSet.add(url);
-    }
-
     downloadURL(url, fileName + '.' + fileExt);
     if (interactive) {
         alert('downloading song: ' + fileName);
     }
+}
+
+function autoDownload(url) {
+    // Don't download the song if it is downloaded before.
+    if (downloadedSongSet.has(url)) {
+        return
+    }
+    downloadedSongSet.add(url);
+
+    AMQ_download(url, false)
 }
 
 function createDownloadSetting() {
@@ -177,7 +179,7 @@ function createDownloadBlock() {
         .text("Video")
         .on("click", function () {
             if ($(this).data("url") !== undefined) {
-                AMQ_download(true, false, $(this).data("url"));
+                AMQ_download($(this).data("url"));
             }
         });
     let audioDLBtn = $(`<button id="amqtbAudioDl"></button>`)
@@ -186,7 +188,7 @@ function createDownloadBlock() {
         .text("Audio")
         .on("click", function () {
             if ($(this).data("url") !== undefined) {
-                AMQ_download(true, false, $(this).data("url"));
+                AMQ_download($(this).data("url"));
             }
         });
     let content = $(`<div class="amqtbButtonContainer"></div>`);
@@ -252,7 +254,7 @@ function setup() {
                         dlURL = (videoURL !== undefined) ? videoURL : audioURL
                     }
                     setTimeout(() => {
-                        AMQ_download(false, true, dlURL);
+                        autoDownload(dlURL);
                     }, 0);
                 }
             }
