@@ -1,4 +1,10 @@
 # AMQ-Toolbox
+
+> **Warning**  
+> This project is deprecated, it would keep developing in [JJJJoe-Lin/AMQ-Toolbox-Vite](https://github.com/JJJJoe-Lin/AMQ-Toolbox-Vite)
+
+---
+
 Some useful functions for AMQ (AnimeMusicQuiz).
 Thanks to [TheJoseph98/AMQ-Scripts](https://github.com/TheJoseph98/AMQ-Scripts) for some framework.
 
